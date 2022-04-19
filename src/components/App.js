@@ -4,35 +4,18 @@ import { useState } from "react";
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import { AppStyle } from './App.styled';
-//import imagesApi from './imagesApi';
-//import { Loader } from './Loader/Loader';
-//import Modal from './Modal/Modal'
-
-//import { ImSearch } from '/react-icons/fa';
-//const BASE_URL = 'https://pixabay.com/api/';
-//const API_KEY = '25444369-ba6b8c690cc86ce1f63d356ab';
-
 
 export default function App() {
 
-  const { searchQuery, setSearchQuery } = useState('');
-
-  // state = { 
-    // searchQuery: '', 
-  // }
-
- 
+  const [searchQuery, setSearchQuery] = useState('');
+   const [currentPage, setCurrentPage] = useState(1);
+   const [images, setImages] = useState([]);
 
   const handleFormSubmit = query => {
-    setSearchQuery({
-      searchQuery: query,
-      currentPage: 1,
-      images: [] 
-    });
-
+    setSearchQuery(query);
+    setCurrentPage(1);
+    setImages([]);
   }
-
-  
 
     // if (status === 'idle') {
     //   return (<div>Введите что-нибудь в строку поиска</div>,
@@ -54,7 +37,7 @@ export default function App() {
     return ( 
         
         <AppStyle>     
-          <Searchbar onSubmit={handleFormSubmit} searchQuery={searchQuery}/>          
+        <Searchbar onSubmit={handleFormSubmit} searchQuery={searchQuery}/>          
         <ImageGallery searchQuery={searchQuery} />
           <ToastContainer autoClose={3000} />      
        </AppStyle>

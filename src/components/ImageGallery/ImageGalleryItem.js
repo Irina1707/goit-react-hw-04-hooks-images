@@ -2,21 +2,20 @@ import React from 'react';
 //import PropTypes from 'prop-types';
 import { ImageGalleryItemImage, GalleryItem } from './ImageGalleryItem.styled';
 
-class ImageGalleryItem extends React.Component {
+export default function ImageGalleryItem({webformatURL, searchQuery, onClick, largeImageURL}) {
 
-  onClickLargeImage = (event) => {
+  const onClickLargeImage = (event) => {
     //this.setState({ largeImageURL: event.target.dataset.large })
-    this.props.onClick(this.props.largeImageURL);
+    onClick(largeImageURL);
   }
-  render() {
-    const { webformatURL, searchQuery} = this.props;
+  
     return (
       <GalleryItem>
-        <ImageGalleryItemImage src={webformatURL} alt={searchQuery} width='100' onClick={this.onClickLargeImage} />
+        <ImageGalleryItemImage src={webformatURL} alt={searchQuery} width='100' onClick={onClickLargeImage} />
       </GalleryItem>
     )
   }
-}
+
 
 
 //ImageGalleryItem.propTypes = {
@@ -26,4 +25,3 @@ class ImageGalleryItem extends React.Component {
 //    searchQuery: PropTypes.string.isRequired,
 //}
 
-export default ImageGalleryItem;
