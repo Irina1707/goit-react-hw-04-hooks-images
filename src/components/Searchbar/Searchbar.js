@@ -16,9 +16,7 @@ export default function Searchbar({onSubmit}) {
 
    const handleSubmit = event => {
        event.preventDefault();
-       
-    //setCurrentPage(1);
-    //setImages([]);
+    
         if (query.trim() === '') {
             toast.warn("Please, enter something in the search box.");
             return;
@@ -26,7 +24,8 @@ export default function Searchbar({onSubmit}) {
 
         onSubmit(query);
 
-       setQuery('');
+     setQuery('');
+    
       
     }
 

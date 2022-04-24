@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import ImageGalleryItem from './ImageGalleryItem';
 import { ToastContainer, toast } from 'react-toastify';
 import API from '../imagesApi';
 import Button from '../Button/Button';
 import { Loader } from '../Loader/Loader';
 import Modal from '../Modal/Modal'
-//import { ImSearch } from '/react-icons/fa';
 import { ImageGalleryStyle } from './ImageGallery.styled';
 
 export default function ImageGallery({ searchQuery }) {
@@ -16,78 +15,56 @@ export default function ImageGallery({ searchQuery }) {
   const [error, setError] = useState(null);
   const [largeImageURL, setLargeImageURL] = useState('');
   const [showModal, setShowModal] = useState(false);
-  
-  const [prevName, setPrevName] = useState('');
-
-  // useEffect(() => {
-  //   if (searchQuery !== prevName) {
-  //     setImages([]);
-  //     //setCurrentPage(1);
-  //     setPrevName(searchQuery);
-  //     setLoading(true);
-  //   }
-    
-  // },
-  // [searchQuery, prevName])
-
-
-  useEffect(() => {
-    if (!searchQuery) {
-      return;
-    }
-   
-    fetchImages()
-  }, [searchQuery]);
+  const [prevName, setPrevName] = useState("")
+  //const [maxPage, setMaxPage] = useState(0)
   
    const scroll = () => {
     window.scrollBy({
-      top: 500,
+      top: document.documentElement.scrollHeight,
       behavior: 'smooth',
     })
   }
 
-  const fetchImages = () => {
-    //setImages([]);
-    setLoading(true);
-    setCurrentPage(1);
+  useEffect(() => {
+     
+    if (searchQuery !== prevName) {
+      setCurrentPage(1)
+      setLoading(true)
+      setImages([]) 
+      setPrevName(searchQuery)       
+      }
+}, [searchQuery, prevName] )
+  
+    useEffect(() => {
+    if (!searchQuery) {
+      return;
+    }
+
    
-    API.fetchImages(searchQuery, currentPage)
-      .then((data) => {
-        setImages([...data.hits]);
-        setCurrentPage((prevPage) => prevPage + 1);
-        setError(null);
-        
-        if (data.hits.length === 0) {
-          toast.warn(`Sorry, there are no images matching ${searchQuery}. Please try again.`);
-        }
-      })
+     fetchImages();
+  }, [searchQuery]);
+ 
+  // const handleLoadMore = () => {
+  //   scroll();
+  //   setLoading(true);
+  //   setCurrentPage(currentPage + 1); 
+  //   }
+
+ const fetchImages = () => {
+   setLoading(true);
+   
+      API.fetchImages(searchQuery, currentPage)
+        .then((data) => {
+          setImages(prevImages => [...prevImages, ...data.hits]);
+          setCurrentPage((prevPage) => prevPage + 1);
+        })
       .catch(error => setError(error))
       .finally(() => {
         setLoading(false);
         scroll();
-
       });
-    }
-    
- 
-  const handleLoadMore = () => {
-    scroll();
-    setLoading(true);
-    setCurrentPage(currentPage + 1)
-      
-    API.fetchImages(searchQuery, currentPage)
-      .then((data) => {
-        setImages([...images, ...data.hits]);
-        //setCurrentPage((prevPage) => prevPage + 1);
-      })
-      .finally(() => {
-        setLoading(false);
-        scroll();
-      });
+  }
 
-    }
-
- 
   const handleLargeImage = (image) => {
     setLargeImageURL(image);
     setShowModal(true);
@@ -95,24 +72,9 @@ export default function ImageGallery({ searchQuery }) {
   const closeModal = () => {
     setShowModal(false);
   }
-    // if (status === 'idle') {
-    //   return (<div>Введите что-нибудь в строку поиска</div>,
-    //   <ToastContainer autoClose={3000}/>)
-    // }
-    // if (status === 'pending') {
-    //   return <Loader />
-    // }
-    // if (status === 'rejected') {
-    //   return <h2>{error.message}</h2>
-    // }
-    // if (status === 'resolved') {
-    //      return (
-    //   <Searchbar onSubmit={this.handleFormSubmit} searchQuery={searchQuery}/>,
-    //   <ImageGallery images={images} />,
-    // <Loader/>
-    //      )
-
  
+  const shouldRenderLoadMoreButton = images.length > 0 && !loading;
+  
     return (
       <div>
         {error && <p>{error.message}</p>}
@@ -131,7 +93,7 @@ export default function ImageGallery({ searchQuery }) {
                 </ImageGalleryStyle>}
 
         {showModal && <Modal largeImageURL={largeImageURL} onClose={closeModal}/>}
-        {images.length > 0 && <Button onClick={handleLoadMore} />}
+        {shouldRenderLoadMoreButton  && <Button onClick={fetchImages} />}
        </div>     
             );
 }
