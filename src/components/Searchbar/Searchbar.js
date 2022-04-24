@@ -6,9 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { SearchbarForm, SearchForm, SearchFormButton, SearchFormInput } from './Searchbar.styled';
 
 export default function Searchbar({onSubmit}) {
-   const [query, setQuery] = useState('');
- //const [images, setImages] = useState([]);
-  //const [currentPage, setCurrentPage] = useState(1);
+  const [query, setQuery] = useState('');
+  
     const handleNameChange = event => {
         setQuery(event.currentTarget.value.toLowerCase()
         );

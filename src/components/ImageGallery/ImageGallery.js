@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import ImageGalleryItem from './ImageGalleryItem';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import API from '../imagesApi';
 import Button from '../Button/Button';
 import { Loader } from '../Loader/Loader';
@@ -16,7 +16,6 @@ export default function ImageGallery({ searchQuery }) {
   const [largeImageURL, setLargeImageURL] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [prevName, setPrevName] = useState("")
-  //const [maxPage, setMaxPage] = useState(0)
   
    const scroll = () => {
     window.scrollBy({
@@ -40,7 +39,6 @@ export default function ImageGallery({ searchQuery }) {
       return;
     }
 
-   
      fetchImages();
   }, [searchQuery]);
  

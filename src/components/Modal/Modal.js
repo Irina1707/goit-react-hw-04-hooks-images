@@ -11,7 +11,6 @@ export default function Modal({ onClose, largeImageURL, searchQuery, children })
         return () =>  window.removeEventListener('keydown', handleKeyDown) 
     })
    
-
     const handleKeyDown = event => {
          if (event.code === 'Escape') {
                 onClose();
