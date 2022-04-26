@@ -3,9 +3,11 @@ import ImageGalleryItem from './ImageGalleryItem';
 import { ToastContainer } from 'react-toastify';
 import API from '../imagesApi';
 import Button from '../Button/Button';
+import Error from '../Error/Error';
 import { Loader } from '../Loader/Loader';
 import Modal from '../Modal/Modal'
 import { ImageGalleryStyle } from './ImageGallery.styled';
+import { toast } from 'react-toastify';
 
 const Status = {
   IDLE: 'idle',
@@ -35,7 +37,7 @@ export default function ImageGallery({ searchQuery }) {
      
     if (searchQuery !== prevName) {
       setCurrentPage(1)
-      setStatus(Status.PENDING)
+      //setStatus(Status.PENDING)
       setImages([]) 
       setPrevName(searchQuery)       
       }
@@ -59,13 +61,15 @@ export default function ImageGallery({ searchQuery }) {
    setStatus(Status.PENDING);
    API.fetchImages(searchQuery, currentPage)
      .then((data) => {
+       if (data.hits.length === 0) {
+            toast.warn(`Sorry, there are no images matching ${searchQuery}. Please try again.`);
+          }  
        setImages(prevImages => [...prevImages, ...data.hits]);
        setCurrentPage((prevPage) => prevPage + 1);
-       setStatus(Status.RESOLVED)
-       setError(null)
+       setStatus(Status.RESOLVED);
      })
      .catch(error => {
-       setError(error);
+       setError(error);  
        setStatus(Status.REJECTED);
      })
      .finally(() => scroll());
@@ -81,7 +85,6 @@ export default function ImageGallery({ searchQuery }) {
  
   return (
       <>
-  {status === Status.REJECTED && <p>{error.message}</p>}
   {status === Status.PENDING && <Loader />} 
   <ToastContainer autoClose={3000} />
   {status === Status.RESOLVED && (
@@ -95,9 +98,10 @@ export default function ImageGallery({ searchQuery }) {
           alt={searchQuery}
           onClick={handleLargeImage} />))}
       </ImageGalleryStyle>;
-    </>)}
+        </>)}
+  {status === Status.REJECTED && <Error message={error.message} />}
   {showModal && <Modal largeImageURL={largeImageURL} onClose={closeModal} />}
-  {images && status === Status.RESOLVED && <Button onClick={fetchImages} />}
+  {status === Status.RESOLVED && <Button onClick={fetchImages} />}
       </>
       )
                      
