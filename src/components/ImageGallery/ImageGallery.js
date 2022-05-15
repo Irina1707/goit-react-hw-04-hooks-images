@@ -49,7 +49,7 @@ export default function ImageGallery({ searchQuery }) {
     }
 
      fetchImages();
-  }, [searchQuery]);
+  }, [searchQuery]); // eslint-disable-line
  
   // const handleLoadMore = () => {
   //   scroll();
